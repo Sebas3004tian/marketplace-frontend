@@ -8,10 +8,10 @@ import {useCreateProduct} from '@/hooks/products/useCreateProduct';
 import {useUploadImage} from '@/hooks/common/useUploadImage';
 import {Category} from '@/interfaces/category';
 import {Subcategory} from "@/interfaces/subcategory";
-import {Product} from "@/interfaces/product";
+import {CreateProductDto} from "@/dto/createProduct.dto";
 
 const CrearProducto = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm<Product>();
+    const { register, handleSubmit, formState: { errors } } = useForm<CreateProductDto>();
     const { getCategories } = useGetCategories();
     const { getSubcategoriesByCategory } = useGetSubcategoriesByCategory();
     const { createProduct } = useCreateProduct();
@@ -40,7 +40,7 @@ const CrearProducto = () => {
         }
     }, [categoriaSeleccionada]);
 
-    const onSubmit = async (data: Product) => {
+    const onSubmit = async (data: CreateProductDto) => {
         if (loading) return;
         setLoading(true);
 
@@ -62,9 +62,6 @@ const CrearProducto = () => {
         }
     };
 
-
-
-
     return (
         <div className="max-w-lg mx-auto p-8 bg-white rounded-lg shadow-lg">
             <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Crear Nuevo Producto</h1>
@@ -75,7 +72,7 @@ const CrearProducto = () => {
                         type="text"
                         {...register("name", {required: "El nombre del producto es obligatorio"})}
                         placeholder="Ingresa el nombre del producto"
-                        className="mt-1 border-gray-300 rounded-md shadow-sm focus:border-green-600 focus:ring focus:ring-green-600 focus:ring-opacity-50 w-full px-3 py-2"
+                        className="mt-1 border-gray-300 rounded-md shadow-sm focus:border-green-600 focus:ring focus:ring-green-600 focus:ring-opacity-50 w-full px-3 py-2 border"
                     />
                     {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                 </div>
@@ -85,7 +82,7 @@ const CrearProducto = () => {
                         type="text"
                         {...register("description", {required: "La descripción es obligatoria"})}
                         placeholder="Ingresa una descripción del producto"
-                        className="mt-1 border-gray-300 rounded-md shadow-sm focus:border-green-600 focus:ring focus:ring-green-600 focus:ring-opacity-50 w-full px-3 py-2"
+                        className="mt-1 border-gray-300 rounded-md shadow-sm focus:border-green-600 focus:ring focus:ring-green-600 focus:ring-opacity-50 w-full px-3 py-2 border"
                     />
                     {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
                 </div>
@@ -96,7 +93,7 @@ const CrearProducto = () => {
                         type="number"
                         {...register("price", {required: "El precio es obligatorio"})}
                         placeholder="Ingresa el precio del producto"
-                        className="mt-1 border-gray-300 rounded-md shadow-sm focus:border-green-600 focus:ring focus:ring-green-600 focus:ring-opacity-50 w-full px-3 py-2"
+                        className="mt-1 border-gray-300 rounded-md shadow-sm focus:border-green-600 focus:ring focus:ring-green-600 focus:ring-opacity-50 w-full px-3 py-2 border"
                     />
                     {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>}
                 </div>
