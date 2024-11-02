@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useGetProducts } from '@/hooks/products/useGetProducts';
 import { useLogin } from "@/hooks/auth/useLogin";
 import { useRouter } from 'next/navigation';  // Import useRouter
-import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { Product } from "@/interfaces/product";
 import ProductCard from "@/components/ProductCard";
