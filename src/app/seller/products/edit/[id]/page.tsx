@@ -7,6 +7,7 @@ import { useGetProduct } from "@/hooks/products/useGetProduct";
 import { useUpdateProduct } from "@/hooks/products/useUpdateProduct";
 import { useUploadImage } from '@/hooks/common/useUploadImage';
 import Image from 'next/image';
+import {ClipLoader} from "react-spinners";
 
 interface EditProductPageProps {
     params: {
@@ -27,20 +28,25 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const { getProduct } = useGetProduct();
     const { updateProduct } = useUpdateProduct();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
             if (params.id) {
+                setLoading(true);
                 const productData = await getProduct(params.id);
                 setProduct(productData);
                 setUpdatedProduct(productData);
+                setLoading(false);
             }
         };
         fetchProduct();
     }, [params.id]);
 
     const handleUpdate = async () => {
+        if(loading) return;
         if (updatedProduct && params.id) {
+            setLoading(true);
             let imageUrl = updatedProduct.mainImageUrl;
 
             if (selectedImage) {
@@ -55,6 +61,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
             };
 
             await updateProduct(params.id, updatedData);
+            setLoading(false);
             router.push('/seller/products');
         }
     };
@@ -82,6 +89,11 @@ export default function EditProductPage({ params }: EditProductPageProps) {
 
     return (
         <div className="p-6 max-w-4xl mx-auto">
+            {loading && (
+                <div className="absolute inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-10">
+                    <ClipLoader color="#000000" size={150} /> {}
+                </div>
+            )}
             <h1 className="text-3xl font-bold mb-6 text-center">Editar Producto</h1>
             <div className="flex space-x-6">
                 <div className="w-1/3">
@@ -96,11 +108,8 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                         type="file"
                         accept="image/png, image/jpeg"
                         onChange={handleImageChange}
-                        className="mt-4 w-full"
+                        className="bg-gray-500 text-white px-4 py-2 mt-2 rounded w-full"
                     />
-                    <button className="bg-gray-500 text-white px-4 py-2 mt-2 rounded w-full">
-                        Editar Imagen (png, jpg)
-                    </button>
                 </div>
 
                 <div className="flex-grow bg-gray-100 p-6 rounded-md shadow-lg">

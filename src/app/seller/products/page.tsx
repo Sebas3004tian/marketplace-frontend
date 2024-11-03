@@ -7,7 +7,8 @@ import { Product } from "@/interfaces/product";
 import ProductCard from "@/components/ProductCard";
 import { useGetMyProducts } from "@/hooks/products/useGetMyProducts";
 import { useDeleteProduct } from "@/hooks/products/useDeleteProduct";
-import ConfirmDeleteModal from "@/components/ConfirmDeleteModal"; // Importa el modal
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
+import {ClipLoader} from "react-spinners"; // Importa el modal
 
 export default function HomeSellerPage() {
     const { getMyProducts } = useGetMyProducts();
@@ -18,20 +19,23 @@ export default function HomeSellerPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
                 await login("seller@example.com", "Password123!");
                 const response = await getMyProducts();
                 setProducts(response);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
         };
 
         fetchData();
-    }, [getMyProducts, login]);
+    }, [setProducts]);
 
     const handleEdit = (id: string) => {
         router.push(`/seller/products/edit/${id}`);
@@ -39,13 +43,18 @@ export default function HomeSellerPage() {
 
     const handleDelete = async () => {
         if (!productToDelete) return;
+        if(loading) return;
         try {
+            setLoading(true);
             await deleteProduct(productToDelete);
-            setProducts(products.filter(product => product.id !== productToDelete));
+            const response = await getMyProducts();
+            setProducts(response);
             setIsModalOpen(false);
             setProductToDelete(null);
         } catch (error) {
             console.error('Error deleting product:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -60,6 +69,11 @@ export default function HomeSellerPage() {
 
     return (
         <div>
+            {loading && (
+                <div className="absolute inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-10">
+                    <ClipLoader color="#000000" size={150} /> {}
+                </div>
+            )}
             <h1 className="text-4xl font-bold mb-4">Productos</h1>
             <div className="space-y-4">
                 <h1 className="text-3xl font-bold text-center mb-6">Productos</h1>

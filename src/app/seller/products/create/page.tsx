@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useGetCategories} from '@/hooks/categories/useGetCategories';
 import {useGetSubcategoriesByCategory} from '@/hooks/subcategories/useGetSubcategoriesByCategory';
@@ -9,6 +9,8 @@ import {useUploadImage} from '@/hooks/common/useUploadImage';
 import {Category} from '@/interfaces/category';
 import {Subcategory} from "@/interfaces/subcategory";
 import {CreateProductDto} from "@/dto/createProduct.dto";
+import { ClipLoader } from 'react-spinners';
+import {useRouter} from "next/navigation";
 
 const CrearProducto = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<CreateProductDto>();
@@ -16,29 +18,32 @@ const CrearProducto = () => {
     const { getSubcategoriesByCategory } = useGetSubcategoriesByCategory();
     const { createProduct } = useCreateProduct();
     const { uploadImage } = useUploadImage();
+    const router = useRouter();
 
-    const [categorias, setCategorias] = useState<Category[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [subcategorias, setSubcategorias] = useState<Subcategory[]>([]);
-    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
+    const [selectedCategory, setCategoriaSeleccionada] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const fetchCategories = useCallback(async () => {
-        const categories = await getCategories();
-        if (categories) setCategorias(categories);
-    }, [getCategories]);
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+            const categories = await getCategories();
+            if (categories) setCategories(categories);
+            setLoading(false);
+        })();
+    }, [setCategories]);
 
     useEffect(() => {
-        fetchCategories();
-    }, [fetchCategories]);
-
-    useEffect(() => {
-        if (categoriaSeleccionada) {
+        if (selectedCategory) {
             (async () => {
-                const subcategories = await getSubcategoriesByCategory(categoriaSeleccionada);
+                setLoading(true);
+                const subcategories = await getSubcategoriesByCategory(selectedCategory);
                 if (subcategories) setSubcategorias(subcategories);
+                setLoading(false);
             })();
         }
-    }, [categoriaSeleccionada]);
+    }, [selectedCategory]);
 
     const onSubmit = async (data: CreateProductDto) => {
         if (loading) return;
@@ -53,7 +58,7 @@ const CrearProducto = () => {
             }
 
             await createProduct(data);
-            alert('¡Producto creado exitosamente!');
+            router.push('/seller/products');
         } catch (error) {
             console.error('Error al crear el producto:', error);
             alert('No se pudo crear el producto.');
@@ -64,6 +69,11 @@ const CrearProducto = () => {
 
     return (
         <div className="max-w-lg mx-auto p-8 bg-white rounded-lg shadow-lg">
+            {loading && (
+                <div className="absolute inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-10">
+                    <ClipLoader color="#000000" size={150} /> {}
+                </div>
+            )}
             <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Crear Nuevo Producto</h1>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
                 <div>
@@ -118,7 +128,7 @@ const CrearProducto = () => {
                         className="mt-1 border-gray-300 rounded-md shadow-sm focus:border-green-600 focus:ring focus:ring-green-600 focus:ring-opacity-50 w-full px-3 py-2"
                     >
                         <option value="">Selecciona una categoría</option>
-                        {categorias.map((categoria) => (
+                        {categories.map((categoria) => (
                             <option key={categoria.id} value={categoria.id}>
                                 {categoria.name}
                             </option>
