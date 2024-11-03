@@ -8,7 +8,7 @@ import {useCreateProduct} from '@/hooks/products/useCreateProduct';
 import {useUploadImage} from '@/hooks/common/useUploadImage';
 import {Category} from '@/interfaces/category';
 import {Subcategory} from "@/interfaces/subcategory";
-import {CreateProductDto} from "@/dto/createProduct.dto";
+import {CreateProductDto} from "@/dto/product/createProduct.dto";
 import { ClipLoader } from 'react-spinners';
 import {useRouter} from "next/navigation";
 

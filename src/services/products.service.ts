@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import Cookies from "js-cookie";
 import { Product } from "@/interfaces/product";
-import { CreateProductDto } from "@/dto/createProduct.dto";
+import { CreateProductDto } from "@/dto/product/createProduct.dto";
 
 export class ProductsService {
     protected readonly axios: AxiosInstance;
