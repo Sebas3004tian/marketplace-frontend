@@ -9,12 +9,12 @@ export default function HomePage() {
         <div className="flex-[1.5] bg-[#2B2D42]">
             <div className="mt-[60px] ml-[60px] h-[350px]">
                 <div className="tittle">
-                    <h1 className="text-4xl font-medium mb-4">Bienvenido a Modi</h1>
+                    <h1 className="text-4xl font-medium mb-4 text-[#FFFFFF]">Bienvenido a Modi</h1>
                 </div>
                 <div className="text-right pt-[100px] pr-[150px] pb-0">
                     <div className="ml-[70%] text-left w-[50%]">
-                        <p className="text-xl mb-6">Empecemos con tu registro</p>
-                        <p>Primero selecciona quien eres:</p>
+                        <p className="text-xl mb-6 text-[#FFFFFF]">Empecemos con tu registro</p>
+                        <p className="text-xl mb-6 text-[#FFFFFF]">Primero selecciona quien eres:</p>
                     </div>
                 </div>
             </div>
