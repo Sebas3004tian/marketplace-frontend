@@ -1,5 +1,6 @@
 import axios, {AxiosInstance}  from 'axios';
 import Cookies from "js-cookie";
+import {CreateSizeDto} from "@/dto/size/createSize.dto";
 
 export class SizesService {
     protected readonly axios: AxiosInstance;
@@ -25,6 +26,15 @@ export class SizesService {
 
     public async delete(id: string) {
         const response = await this.axios.delete("/sizes/delete/"+id, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
+    }
+
+    public async create(createSizeDto: CreateSizeDto) {
+        const response = await this.axios.post("/sizes/create", createSizeDto, {
             headers: {
                 Authorization: `Bearer ${Cookies.get("token")}`
             }

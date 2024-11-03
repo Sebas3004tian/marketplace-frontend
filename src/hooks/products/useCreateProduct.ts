@@ -1,4 +1,3 @@
-import { Product } from "@/interfaces/product";
 import {ProductsService} from "@/services/products.service";
 import {CreateProductDto} from "@/dto/product/createProduct.dto";
 

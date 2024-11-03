@@ -1,6 +1,7 @@
 import axios, {AxiosInstance}  from 'axios';
 import Cookies from "js-cookie";
 import {Option} from "@/interfaces/option";
+import {CreateOptionDto} from "@/dto/option/createOption.dto";
 
 export class OptionsService {
     protected readonly axios: AxiosInstance;
@@ -35,6 +36,15 @@ export class OptionsService {
 
     public async update(id: string, option: Partial<Option>) {
         const response = await this.axios.put("/options/update/"+id, option, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
+    }
+
+    public async create(createOptionDto: CreateOptionDto) {
+        const response = await this.axios.post("/options/create", createOptionDto, {
             headers: {
                 Authorization: `Bearer ${Cookies.get("token")}`
             }

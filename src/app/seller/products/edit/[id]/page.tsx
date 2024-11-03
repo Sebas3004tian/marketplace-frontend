@@ -8,10 +8,23 @@ import { useUpdateProduct } from "@/hooks/products/useUpdateProduct";
 import { useUploadImage } from '@/hooks/common/useUploadImage';
 import { useGetSizesByProduct } from "@/hooks/sizes/useGetSizesByProduct";
 import { useGetOptionsBySize } from "@/hooks/option/useGetOptionsBySize";
+import { useDeleteSize } from "@/hooks/sizes/useDeleteSize";
+import { useDeleteOption } from "@/hooks/option/useDeleteOption";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import Image from 'next/image';
 import { ClipLoader } from "react-spinners";
 import { Size } from "@/interfaces/size";
 import { Option } from "@/interfaces/option";
+import SizeListSection from "@/app/seller/products/edit/[id]/SizeListSection";
+import OptionsSection from "@/app/seller/products/edit/[id]/OptionsSection";
+import {useCreateSize} from "@/hooks/sizes/useCreateSize";
+import {useCreateOption} from "@/hooks/option/useCreateOption";
+import {useUpdateOption} from "@/hooks/option/useUpdateOption";
+import {UpdateOptionDto} from "@/dto/option/updateOption.dto";
+import {CreateOptionDto} from "@/dto/option/createOption.dto";
+import {CreateSizeDto} from "@/dto/size/createSize.dto";
+import {OptionFormModal} from "@/components/OptionFormModal";
+import {SizeFormModal} from "@/components/SizeFormModal";
 
 interface EditProductPageProps {
     params: {
@@ -26,6 +39,11 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     const { updateProduct } = useUpdateProduct();
     const { getSizesByProduct } = useGetSizesByProduct();
     const { getOptionsBySize } = useGetOptionsBySize();
+    const { deleteSize } = useDeleteSize();
+    const { deleteOption } = useDeleteOption();
+    const { createSize } = useCreateSize();
+    const { createOption } = useCreateOption();
+    const { updateOption } = useUpdateOption();
 
     const [product, setProduct] = useState<UpdateProductDto | null>(null);
     const [updatedProduct, setUpdatedProduct] = useState<UpdateProductDto>({
@@ -36,10 +54,15 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     });
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
-
     const [sizes, setSizes] = useState<Size[]>([]);
-    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const [selectedSize, setSelectedSize] = useState<string>('');
     const [options, setOptions] = useState<Option[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<{ type: "size" | "option"; id: string } | null>(null);
+
+    const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
+    const [isOptionModalOpen, setIsOptionModalOpen] = useState(false);
+    const [editingOption, setEditingOption] = useState<Option | undefined>(undefined);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -58,7 +81,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
 
     useEffect(() => {
         const fetchOptions = async () => {
-            if (selectedSize) {
+            if (selectedSize !== '') {
                 const fetchedOptions = await getOptionsBySize(selectedSize);
                 setOptions(fetchedOptions);
             } else {
@@ -111,6 +134,78 @@ export default function EditProductPage({ params }: EditProductPageProps) {
 
     const handleSizeClick = (sizeId: string) => {
         setSelectedSize(sizeId);
+        console.log('Selected size:', sizeId);
+    };
+
+    const confirmDelete = (type: "size" | "option", id: string) => {
+        setItemToDelete({ type, id });
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async () => {
+        if (itemToDelete) {
+            setLoading(true);
+            if (itemToDelete.type === "size") {
+                await deleteSize(itemToDelete.id);
+                setSizes(sizes.filter(size => size.id !== itemToDelete.id));
+                setSelectedSize('');
+            } else {
+                await deleteOption(itemToDelete.id);
+                setOptions(options.filter(option => option.id !== itemToDelete.id));
+            }
+            setLoading(false);
+            setIsModalOpen(false);
+            setItemToDelete(null);
+        }
+    };
+
+    const handleCreateSize = async (createSizeDto: CreateSizeDto) => {
+        try {
+            setLoading(true);
+            await createSize(createSizeDto);
+            const fetchedSizes = await getSizesByProduct(params.id);
+            setSizes(fetchedSizes);
+        } catch (error) {
+            console.error("Error creating size:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCreateOption = async (createOptionDto: CreateOptionDto) => {
+        try {
+            setLoading(true);
+            if (selectedSize !== '') {
+                createOptionDto.sizeId = selectedSize;
+                await createOption(createOptionDto);
+                const fetchedOptions = await getOptionsBySize(selectedSize);
+                setOptions(fetchedOptions);
+            }
+        } catch (error) {
+            console.error("Error creating option:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUpdateOption = async (id: string, updateOptionDto: UpdateOptionDto) => {
+        try {
+            setLoading(true);
+            await updateOption(id, updateOptionDto);
+            if (selectedSize !== '') {
+                const fetchedOptions = await getOptionsBySize(selectedSize);
+                setOptions(fetchedOptions);
+            }
+        } catch (error) {
+            console.error("Error updating option:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEditOption = (option: Option) => {
+        setEditingOption(option);
+        setIsOptionModalOpen(true);
     };
 
     if (!product) return <p className="text-center text-gray-600">Cargando...</p>;
@@ -120,7 +215,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
         <div className="p-6 max-w-6xl mx-auto space-y-8">
             {loading && (
                 <div className="absolute inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-10">
-                    <ClipLoader size={150} color={"#123abc"} loading={loading} />
+                    <ClipLoader size={150} color={"#123abc"} loading={loading}/>
                 </div>
             )}
             <h1 className="text-3xl font-bold text-center mb-6">Editar Producto</h1>
@@ -138,20 +233,61 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                         sizes={sizes}
                         handleSizeClick={handleSizeClick}
                         selectedSize={selectedSize}
+                        onDeleteSize={(id) => confirmDelete("size", id)}
+                        onAddSize={() => setIsSizeModalOpen(true)}
                     />
                 </div>
                 <div className="flex-grow min-w-[40%]">
                     <OptionsSection
                         selectedSize={selectedSize}
                         options={options}
+                        onDeleteOption={(id) => confirmDelete("option", id)}
+                        onEditOption={handleEditOption}
+                        onAddOption={() => setIsOptionModalOpen(true)}
                     />
                 </div>
             </div>
+
+            <SizeFormModal
+                isOpen={isSizeModalOpen}
+                onClose={() => setIsSizeModalOpen(false)}
+                onSubmit={handleCreateSize}
+                productId={params.id}
+            />
+
+            <OptionFormModal
+                isOpen={isOptionModalOpen}
+                onClose={() => {
+                    setIsOptionModalOpen(false);
+                    setEditingOption(undefined);
+                }}
+                onSubmit={(data) => {
+                    if (editingOption) {
+                        handleUpdateOption(editingOption.id, data as UpdateOptionDto);
+                    } else {
+                        handleCreateOption(data as CreateOptionDto);
+                    }
+                }}
+                sizeId={selectedSize}
+                option={editingOption}
+                isEditing={!!editingOption}
+            />
+
+            <ConfirmDeleteModal
+                isOpen={isModalOpen}
+                onConfirm={handleDelete}
+                onCancel={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }
 
-const ProductInfoSection = ({ updatedProduct, handleInputChange, handleImageChange, handleUpdate }: { updatedProduct: UpdateProductDto, handleInputChange: (field: keyof UpdateProductDto, value: string | number | boolean) => void, handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void, handleUpdate: () => void }) => (
+const ProductInfoSection = ({updatedProduct, handleInputChange, handleImageChange, handleUpdate}: {
+    updatedProduct: UpdateProductDto,
+    handleInputChange: (field: keyof UpdateProductDto, value: string | number | boolean) => void,
+    handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    handleUpdate: () => void
+}) => (
     <div className="bg-gray-100 p-6 rounded-md shadow-lg">
         <h2 className="text-xl font-bold mb-4">Información del Producto</h2>
         <div className="space-y-4">
@@ -205,39 +341,5 @@ const ProductInfoSection = ({ updatedProduct, handleInputChange, handleImageChan
                 Guardar Cambios
             </button>
         </div>
-    </div>
-);
-
-const SizeListSection = ({ sizes, handleSizeClick, selectedSize }: { sizes: Size[], handleSizeClick: (sizeId: string) => void, selectedSize: string | null }) => (
-    <div className="bg-gray-100 p-6 rounded-md shadow-lg h-full">
-        <h2 className="text-xl font-bold mb-4">Tallas</h2>
-        <ul className="space-y-2">
-            {sizes.map((size) => (
-                <li
-                    key={size.id}
-                    onClick={() => handleSizeClick(size.id)}
-                    className={`p-3 border rounded cursor-pointer ${selectedSize === size.id ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'} transition-colors hover:bg-blue-50`}
-                >
-                    {size.name}
-                </li>
-            ))}
-        </ul>
-    </div>
-);
-
-const OptionsSection = ({ selectedSize, options }: { selectedSize: string | null, options: Option[] }) => (
-    <div className="bg-gray-100 p-6 rounded-md shadow-lg h-full">
-        <h2 className="text-xl font-bold mb-4">Opciones</h2>
-        {selectedSize && options.length > 0 ? (
-            <div className="space-y-4">
-                {options.map((option) => (
-                    <div key={option.id} className="flex items-center space-x-4">
-                        <span>{option.description}</span>
-                    </div>
-                ))}
-            </div>
-        ) : (
-            <p className="text-gray-500">Selecciona una talla para ver las opciones disponibles.</p>
-        )}
     </div>
 );
