@@ -22,4 +22,13 @@ export class SizesService {
         });
         return response.data;
     }
+
+    public async delete(id: string) {
+        const response = await this.axios.delete("/sizes/delete/"+id, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
+    }
 }

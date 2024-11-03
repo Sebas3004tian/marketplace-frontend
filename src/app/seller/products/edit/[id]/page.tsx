@@ -9,10 +9,9 @@ import { useUploadImage } from '@/hooks/common/useUploadImage';
 import { useGetSizesByProduct } from "@/hooks/sizes/useGetSizesByProduct";
 import { useGetOptionsBySize } from "@/hooks/option/useGetOptionsBySize";
 import Image from 'next/image';
-import {ClipLoader} from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import { Size } from "@/interfaces/size";
 import { Option } from "@/interfaces/option";
-
 
 interface EditProductPageProps {
     params: {
@@ -60,10 +59,8 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     useEffect(() => {
         const fetchOptions = async () => {
             if (selectedSize) {
-                setLoading(true);
                 const fetchedOptions = await getOptionsBySize(selectedSize);
                 setOptions(fetchedOptions);
-                setLoading(false);
             } else {
                 setOptions([]);
             }
@@ -94,7 +91,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
         }
     };
 
-    const handleInputChange = (field: keyof UpdateProductDto, value: any) => {
+    const handleInputChange = (field: keyof UpdateProductDto, value: string | number | boolean) => {
         setUpdatedProduct((prevProduct) => ({
             ...prevProduct,
             [field]: value,
@@ -123,7 +120,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
         <div className="p-6 max-w-6xl mx-auto space-y-8">
             {loading && (
                 <div className="absolute inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-10">
-                    <ClipLoader color="#000000" size={150} />
+                    <ClipLoader size={150} color={"#123abc"} loading={loading} />
                 </div>
             )}
             <h1 className="text-3xl font-bold text-center mb-6">Editar Producto</h1>
@@ -137,17 +134,24 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                     />
                 </div>
                 <div className="flex-none w-[20%]">
-                    <SizeListSection sizes={sizes} handleSizeClick={handleSizeClick} selectedSize={selectedSize} />
+                    <SizeListSection
+                        sizes={sizes}
+                        handleSizeClick={handleSizeClick}
+                        selectedSize={selectedSize}
+                    />
                 </div>
                 <div className="flex-grow min-w-[40%]">
-                    <OptionsSection selectedSize={selectedSize} options={options} />
+                    <OptionsSection
+                        selectedSize={selectedSize}
+                        options={options}
+                    />
                 </div>
             </div>
         </div>
     );
 }
 
-const ProductInfoSection = ({ updatedProduct, handleInputChange, handleImageChange, handleUpdate }) => (
+const ProductInfoSection = ({ updatedProduct, handleInputChange, handleImageChange, handleUpdate }: { updatedProduct: UpdateProductDto, handleInputChange: (field: keyof UpdateProductDto, value: string | number | boolean) => void, handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void, handleUpdate: () => void }) => (
     <div className="bg-gray-100 p-6 rounded-md shadow-lg">
         <h2 className="text-xl font-bold mb-4">Información del Producto</h2>
         <div className="space-y-4">
@@ -157,7 +161,7 @@ const ProductInfoSection = ({ updatedProduct, handleInputChange, handleImageChan
                     type="text"
                     value={updatedProduct.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    className="w-full p-2 border rounded"
                 />
             </div>
             <div>
@@ -165,7 +169,7 @@ const ProductInfoSection = ({ updatedProduct, handleInputChange, handleImageChan
                 <textarea
                     value={updatedProduct.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
-                    className="w-full h-32 border border-gray-300 rounded px-3 py-2 resize-none focus:outline-none focus:border-blue-500"
+                    className="w-full p-2 border rounded"
                 />
             </div>
             <div>
@@ -173,25 +177,24 @@ const ProductInfoSection = ({ updatedProduct, handleInputChange, handleImageChan
                 <input
                     type="number"
                     value={updatedProduct.price}
-                    onChange={(e) => handleInputChange('price', e.target.value)}
-                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                    className="w-full p-2 border rounded"
                 />
             </div>
             <div>
                 <label className="block text-gray-700 font-semibold mb-1">Imagen Principal:</label>
                 <input
                     type="file"
-                    accept="image/png, image/jpeg"
                     onChange={handleImageChange}
-                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    className="w-full p-2 border rounded"
                 />
                 {updatedProduct.mainImageUrl && (
                     <Image
                         src={updatedProduct.mainImageUrl}
                         alt="Imagen del producto"
-                        width={150}
-                        height={150}
-                        className="mt-4 rounded-md shadow"
+                        width={200}
+                        height={200}
+                        className="mt-4"
                     />
                 )}
             </div>
@@ -205,7 +208,7 @@ const ProductInfoSection = ({ updatedProduct, handleInputChange, handleImageChan
     </div>
 );
 
-const SizeListSection = ({ sizes, handleSizeClick, selectedSize }) => (
+const SizeListSection = ({ sizes, handleSizeClick, selectedSize }: { sizes: Size[], handleSizeClick: (sizeId: string) => void, selectedSize: string | null }) => (
     <div className="bg-gray-100 p-6 rounded-md shadow-lg h-full">
         <h2 className="text-xl font-bold mb-4">Tallas</h2>
         <ul className="space-y-2">
@@ -222,18 +225,14 @@ const SizeListSection = ({ sizes, handleSizeClick, selectedSize }) => (
     </div>
 );
 
-const OptionsSection = ({ selectedSize, options }) => (
+const OptionsSection = ({ selectedSize, options }: { selectedSize: string | null, options: Option[] }) => (
     <div className="bg-gray-100 p-6 rounded-md shadow-lg h-full">
         <h2 className="text-xl font-bold mb-4">Opciones</h2>
         {selectedSize && options.length > 0 ? (
             <div className="space-y-4">
                 {options.map((option) => (
                     <div key={option.id} className="flex items-center space-x-4">
-                        <Image src={option.imageUrl} alt={option.description} width={80} height={80} className="object-cover rounded" />
-                        <div>
-                            <h3 className="font-semibold">{option.description}</h3>
-                            <p className="text-gray-600">Unidades disponibles: {option.availableUnits}</p>
-                        </div>
+                        <span>{option.description}</span>
                     </div>
                 ))}
             </div>
