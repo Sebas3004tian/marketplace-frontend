@@ -22,4 +22,16 @@ export class AuthService {
 
         return response.data;
     }
+
+    public async register(fullName: string, email: string, password: string, address: string, roleName: 'buyer' | 'seller') {
+        console.log(fullName, email, password, address, roleName);
+        const response = await this.axios.post('/auth/register', {
+            fullName,
+            email,
+            password,
+            address,
+            roleName,
+        });
+        return response.data;
+    }
 }
