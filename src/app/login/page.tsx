@@ -121,7 +121,7 @@ const LoginUser = () => {
                             <div className="flex items-center space-x-2">
                                 <label htmlFor="remember" className="text-sm font-medium text-gray-700"> </label>
                             </div>
-                            <a href="/home" className="text-sm hover:underline text-[#272B3F] no-underline hover:underline">
+                            <a href="/" className="text-sm hover:underline text-[#272B3F] no-underline hover:underline">
                                 ¿No tienes cuenta? Ingresa aquí
                             </a>
                         </div>

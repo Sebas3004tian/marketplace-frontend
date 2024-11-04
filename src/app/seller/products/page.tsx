@@ -25,7 +25,6 @@ export default function HomeSellerPage() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                await login("seller@example.com", "Password123!");
                 const response = await getMyProducts();
                 setProducts(response);
                 setLoading(false);

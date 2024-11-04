@@ -2,6 +2,9 @@ import UserVector from '../components/svg/User.svg';
 import StoreVector from '../components/svg/Store.svg';
 import LogoVector from '../components/svg/Logo1.svg';
 import Image from 'next/image';
+import Link from 'next/link';
+
+
 
 
 export default function Home() {
@@ -21,15 +24,17 @@ export default function Home() {
             </div>
             
             <div className="flex justify-end w-full">
-                <button className="flex items-center justify-center rounded-l-[10%]  cursor-pointer transition-all duration-300 w-[120px] h-[120px] bg-[#EDF2F4] border-none shadow-md hover:shadow-lg active:shadow-inner active:bg-[#edf2f4e7] active:transform active:translate-y-[2px]">
-                    <Image
-                        priority
-                        src={UserVector}
-                        alt=""
-                        width={70}
-                        height={70}
-                    />
-                </button>
+                <Link href="register/buyer">
+                    <button className="flex items-center justify-center rounded-l-[10%]  cursor-pointer transition-all duration-300 w-[120px] h-[120px] bg-[#EDF2F4] border-none shadow-md hover:shadow-lg active:shadow-inner active:bg-[#edf2f4e7] active:transform active:translate-y-[2px]">
+                        <Image
+                            priority
+                            src={UserVector}
+                            alt=""
+                            width={70}
+                            height={70}
+                        />
+                    </button>
+                </Link>
             </div>
         </div>
         <div className="flex-[1] bg-[#EDF2F4]">
@@ -45,15 +50,17 @@ export default function Home() {
                 </div>
             </div>
             <div className="flex justify-start w-full">
-                <button className="flex items-center justify-center rounded-r-[10%] cursor-pointer transition-all duration-300 w-[120px] h-[120px] bg-[#2B2D42] border-none shadow-md hover:shadow-lg active:shadow-inner active:bg-[#2b2d42e6] active:transform active:translate-y-[2px]">
-                    <Image
-                        priority
-                        src={StoreVector}
-                        alt=""
-                        width={80}
-                        height={80}
-                    />
-                </button>
+                <Link href="register/seller">
+                    <button className="flex items-center justify-center rounded-r-[10%] cursor-pointer transition-all duration-300 w-[120px] h-[120px] bg-[#2B2D42] border-none shadow-md hover:shadow-lg active:shadow-inner active:bg-[#2b2d42e6] active:transform active:translate-y-[2px]">
+                        <Image
+                            priority
+                            src={StoreVector}
+                            alt=""
+                            width={80}
+                            height={80}
+                        />
+                    </button>
+                </Link>
             </div>
             <a href="login" className="ml-[15%] absolute bottom-8 text-[#272B3F] no-underline hover:underline">¿Ya tienes cuenta? Ingresa Aquí</a>
         </div>
