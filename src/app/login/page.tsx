@@ -1,8 +1,8 @@
 "use client";
 
-import UserVector from '../../../components/svg/User.svg';
-import StoreVector from '../../../components/svg/Store.svg';
-import LogoVector from '../../../components/svg/Logo1.svg';
+import UserVector from '../../components/svg/User.svg';
+import StoreVector from '../../components/svg/Store.svg';
+import LogoVector from '../../components/svg/Logo1.svg';
 import { useLogin } from "@/hooks/auth/useLogin";
 import Image from 'next/image';
 import { useState } from 'react';
