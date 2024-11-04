@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import SellerNavbar from '../../../components/SellerNavbar';
 
 export default function Layout({ children }: { children: ReactNode }) {
     return (
