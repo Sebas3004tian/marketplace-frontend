@@ -1,5 +1,6 @@
 import axios, {AxiosInstance}  from 'axios';
 import Cookies from "js-cookie";
+import {CreateSubcategoryDto} from "@/dto/subcategory/createSubcategory.dto";
 
 export class SubcategoriesService {
     protected readonly axios: AxiosInstance;
@@ -25,6 +26,33 @@ export class SubcategoriesService {
 
     public async getByCategory(categoryId: string) {
         const response = await this.axios.get("/subcategories/"+categoryId, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
+    }
+
+    public async getMineByCategory(categoryId: string) {
+        const response = await this.axios.get("/subcategories/mine/"+categoryId, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
+    }
+
+    public async create(createSubcategoryDto: CreateSubcategoryDto) {
+        const response = await this.axios.post("/subcategories/create", createSubcategoryDto, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
+    }
+
+    public async delete(subcategoryId: string) {
+        const response = await this.axios.delete("/subcategories/delete/"+subcategoryId, {
             headers: {
                 Authorization: `Bearer ${Cookies.get("token")}`
             }
