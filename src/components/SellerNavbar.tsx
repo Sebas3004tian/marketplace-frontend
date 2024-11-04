@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Mail, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import UserVector from '../components/svg/User.svg';
+import LogoVector from '../components/svg/LogoPage.svg';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
 
@@ -36,9 +37,15 @@ export default function SellerNavbar() {
     };
 
     return (
-        <nav className="bg-gray-900 text-white p-5 relative">
+        <nav className="bg-[#2B2D42] text-white p-5 relative">
             <div className="container mx-auto flex justify-between items-center">
-                <h1 className="text-2xl">Stock-Vendedor</h1>
+                 <Image
+                    priority
+                    src={LogoVector}
+                    alt=""
+                    width={40}
+                    height={39}
+                />
                 <div>
                     <button onClick={() => router.push('/seller/products')} className="mr-8">Productos</button>
                     <button onClick={() => router.push('/seller/orders')} className="mr-8">Ventas</button>
@@ -55,7 +62,7 @@ export default function SellerNavbar() {
                 </button>
             </div>
             {isProfileMenuOpen && (
-                <div className="absolute top-20 right-0 bg-gray-800 text-white w-376 p-4 rounded-bl-lg shadow-lg z-10">
+                <div className="absolute top-20 right-0 bg-[#2B2D42] text-white w-[350px] h-[500px] p-4 rounded-bl-lg shadow-lg z-10 flex flex-col">
                     <ul>
                         <div className="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
                             <div className="flex flex-col items-center p-6">
@@ -81,11 +88,11 @@ export default function SellerNavbar() {
                                 </div>
                             </div>
                         </div>
-                        <li className="border-b border-gray-700 py-2 cursor-pointer" onClick={() => router.push('/profile/edit')}>
-                            Editar tu información
+                        <li className="border-b border-gray-700 py-2 cursor-pointer hover:bg-gray-700 hover:text-white transition-colors duration-200" onClick={() => router.push('/profile/edit')}>
+                            | Editar tu información
                         </li>
                     </ul>
-                    <button className="w-full mt-4 text-center py-2 border-t border-gray-700" onClick={handleLogout}>
+                    <button className="w-full mt-auto text-center py-2 border-t border-gray-700 cursor-pointer hover:bg-gray-700 hover:text-white transition-colors duration-200" onClick={handleLogout}>
                         Cerrar Sesión
                     </button>
                 </div>
