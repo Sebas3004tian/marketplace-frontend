@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import { Mail, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import UserVector from '../components/svg/User.svg';
 import LogoVector from '../components/svg/LogoPage.svg';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
+import EditProfileModal from '../components/EditProfileModal';
 
 export default function SellerNavbar() {
     const router = useRouter();
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
-    const [currentUser, setCurrentUser] = useState({ fullName: "", email: "", address: "" });
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState({id:"", fullName: "", email: "", address: "" });
 
     useEffect(() => {
         const cookieValue = Cookies.get('currentUser');
@@ -19,6 +21,7 @@ export default function SellerNavbar() {
         if (cookieValue) {
             const user = JSON.parse(cookieValue);
             setCurrentUser({
+                id: user.id,
                 fullName: user.fullName,
                 email: user.email,
                 address: user.address,
@@ -36,10 +39,18 @@ export default function SellerNavbar() {
         window.location.href = "/login";
     };
 
+    const handleEditClick = () => {
+        setIsEditModalOpen(true);
+    };
+
+    const handleUserUpdate = (updatedUser: SetStateAction<{ id: string,fullName: string; email: string; address: string; }>) => {
+        setCurrentUser(updatedUser);
+    };
+
     return (
         <nav className="bg-[#2B2D42] text-white p-5 relative">
             <div className="container mx-auto flex justify-between items-center">
-                 <Image
+                <Image
                     priority
                     src={LogoVector}
                     alt=""
@@ -88,7 +99,7 @@ export default function SellerNavbar() {
                                 </div>
                             </div>
                         </div>
-                        <li className="border-b border-gray-700 py-2 cursor-pointer hover:bg-gray-700 hover:text-white transition-colors duration-200" onClick={() => router.push('/profile/edit')}>
+                        <li className="border-b border-gray-700 py-2 cursor-pointer hover:bg-gray-700 hover:text-white transition-colors duration-200" onClick={handleEditClick}>
                             | Editar tu información
                         </li>
                     </ul>
@@ -97,6 +108,13 @@ export default function SellerNavbar() {
                     </button>
                 </div>
             )}
+            
+            <EditProfileModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                currentUser={currentUser}
+                onUserUpdate={handleUserUpdate}
+            />
         </nav>
     );
 }
