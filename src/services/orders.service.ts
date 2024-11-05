@@ -1,4 +1,5 @@
 import axios, {AxiosInstance}  from 'axios';
+import { CreateOrderDto } from '@/dto/order/createOrder.dto';
 import Cookies from "js-cookie";
 
 export class OrdersService {
@@ -23,11 +24,20 @@ export class OrdersService {
         return response.data;
     }
 
-    /* ----------- Los implementa Paz ---------------
-    /*public async getBuyerOrders() {
-
+    public async getBuyerOrders() {
+        const response = await this.axios.get("/orders/buyer_orders", {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
     }
-    /*public async create(createOrderDto: CreateOrderDto) {
-
-    }*/
+    public async create(createOrderDto: CreateOrderDto) {
+        const response = await this.axios.post("/orders/create",createOrderDto, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
+    }
 }

@@ -44,6 +44,15 @@ export class ProductsService {
         return response.data;
     }
 
+    public async getProductFiltered() {
+        const response = await this.axios.get(`/product/all/`, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`
+            }
+        });
+        return response.data;
+    }
+
     public async create(product: CreateProductDto) {
         return await this.axios.post('/product/create', product, {
             headers: {
