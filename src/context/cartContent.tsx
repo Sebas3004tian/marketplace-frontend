@@ -2,12 +2,12 @@
 
 import { createContext, useCallback, useMemo, useState } from "react";
 import { ReactNode } from 'react';
-import { Product } from "@/interfaces/product";
+import { NewProduct } from "@/interfaces/newProduct";
 
 interface ShoppingCartContextType {
-    products: Product[];
+    products: NewProduct[];
     totalAmount: number;
-    addProduct: (product: Product) => void;
+    addProduct: (product: NewProduct) => void;
     removeProduct: (productId: string) => void;
     clearShoppingCart: () => void;
   }
@@ -20,14 +20,15 @@ export const ShoppingCartContext = createContext<ShoppingCartContextType>({
     clearShoppingCart: () => {},
 });
 
+
 export const ShoppingCartProvider = ({ children}:{children: ReactNode}) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<NewProduct[]>([]);
 
   const totalAmount = useMemo(() => {
     return products.reduce((total, product) => total + product.price, 0);
   }, [products]);
 
-  const addProduct = useCallback((product: Product) => {
+  const addProduct = useCallback((product: NewProduct) => {
     setProducts((productsP) => [...productsP, product]);
   }, []);
 
