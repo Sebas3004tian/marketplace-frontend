@@ -3,7 +3,7 @@ import {CreateOptionDto} from "@/dto/option/createOption.dto";
 
 export const useCreateOption = () => {
     const createOption = async (createOptionDto: CreateOptionDto) => {
-        const optionsService = new OptionsService("http://localhost:3001/");
+        const optionsService = new OptionsService("https://marketplace-backend-production-d4eb.up.railway.app/");
         try {
             await optionsService.create(createOptionDto);
         } catch (error) {

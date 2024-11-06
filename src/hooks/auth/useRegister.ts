@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 export const useRegister = () => {
     const register = async (fullName: string, email: string, password: string, address: string, roleName: 'buyer' | 'seller') => {
-        const authService = new AuthService("http://localhost:3001/");
+        const authService = new AuthService("https://marketplace-backend-production-d4eb.up.railway.app/");
         const response = await authService.register(fullName, email, password, address, roleName);
 
         if (response) {

@@ -3,7 +3,7 @@ import {ProductsService} from "@/services/products.service";
 
 export const useGetProductsFiltered = () => {
     const getProducts = async () => {
-        const productsService = new ProductsService("http://localhost:3001/");
+        const productsService = new ProductsService("https://marketplace-backend-production-d4eb.up.railway.app/");
         const allProducts = await productsService.getProductFiltered();
 
         return allProducts as Product[];
