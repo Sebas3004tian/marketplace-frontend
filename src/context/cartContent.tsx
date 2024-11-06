@@ -2,32 +2,38 @@
 
 import { createContext, useCallback, useMemo, useState } from "react";
 import { ReactNode } from 'react';
-import { Product } from "@/interfaces/product";
+import { NewProduct } from "@/interfaces/newProduct";
 
 interface ShoppingCartContextType {
-    products: Product[];
+    productFilter:string;
+    products: NewProduct[];
     totalAmount: number;
-    addProduct: (product: Product) => void;
+    addProduct: (product: NewProduct) => void;
     removeProduct: (productId: string) => void;
     clearShoppingCart: () => void;
+    changeTypeProduct: (filter: string) => void;
   }
   
 export const ShoppingCartContext = createContext<ShoppingCartContextType>({
+    productFilter:"All",
     products: [],
     totalAmount: 0,
     addProduct: () => {},
     removeProduct: () => {},
     clearShoppingCart: () => {},
+    changeTypeProduct: () => {}
 });
 
+
 export const ShoppingCartProvider = ({ children}:{children: ReactNode}) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<NewProduct[]>([]);
+  const [productFilter, setProductFilter] = useState<string>("")
 
   const totalAmount = useMemo(() => {
-    return products.reduce((total, product) => total + product.price, 0);
+    return products.reduce((total, product) => Number(total) + Number(product.price), 0);
   }, [products]);
 
-  const addProduct = useCallback((product: Product) => {
+  const addProduct = useCallback((product: NewProduct) => {
     setProducts((productsP) => [...productsP, product]);
   }, []);
 
@@ -39,9 +45,11 @@ export const ShoppingCartProvider = ({ children}:{children: ReactNode}) => {
 
   const clearShoppingCart = useCallback(() => setProducts([]), []);
 
+  const changeTypeProduct = useCallback((filter:string) => setProductFilter(filter),[])
+
   return (
     <ShoppingCartContext.Provider
-      value={{ products, totalAmount, addProduct, removeProduct, clearShoppingCart }}
+      value={{ productFilter, products, totalAmount, addProduct, removeProduct, clearShoppingCart, changeTypeProduct}}
     >
       {children}
     </ShoppingCartContext.Provider>
