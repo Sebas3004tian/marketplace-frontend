@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 export const useEditUser = () => {
     const editUser = async (id: string,fullName: string, email: string, address:string) => {
-        const userService = new UserService("http://localhost:3001/");
+        const userService = new UserService("https://marketplace-backend-production-d4eb.up.railway.app/");
         const response = await userService.editUser(id,fullName, email, address);
         console.log(response);
         if (response){

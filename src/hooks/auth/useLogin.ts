@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 export const useLogin = () => {
     const login = async (email: string, password: string) => {
-        const authService = new AuthService("http://localhost:3001/");
+        const authService = new AuthService("https://marketplace-backend-production-d4eb.up.railway.app/");
         const response = await authService.login(email, password);
         if (response){
             Cookies.set("currentUser", JSON.stringify(response.user));
