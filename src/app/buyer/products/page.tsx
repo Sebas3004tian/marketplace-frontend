@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation';
 import { Product } from "@/interfaces/product";
 import  ProductCardBuyer from "@/components/ProductCardBuyer"
-import { useGetProductsFiltered} from "@/hooks/products/useGetProductsFiltered";
 import { useGetProducts } from "@/hooks/products/useGetProducts";
 import {ClipLoader} from "react-spinners"; // Importa el modal
 
@@ -30,8 +28,8 @@ export default function HomeBuyerPage (){
         fetchData();
     }, [setProducts]);
 
-    const handleSubmit = async (id:string) =>{
-        
+    const handleSubmit = async ( id: string) =>{
+        console.log(id);
     }
     return (
         <div>

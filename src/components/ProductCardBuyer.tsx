@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface ProductCardProps {
 
     mainImageUrl: string
@@ -8,7 +6,7 @@ interface ProductCardProps {
     onAddCart: () => void
   }
 
-export default function ProductCardBuyer({ mainImageUrl, name, price, onAddCart}: ProductCardProps) {
+export default function ProductCardBuyer({ mainImageUrl, name, price }: ProductCardProps) {
   return (
     <div className="w-64 p-4 bg-white shadow-md rounded-lg border border-gray-200">
       <img className="w-45 h-45 object-cover rounded-md mb-4" src={mainImageUrl} alt={name} />
