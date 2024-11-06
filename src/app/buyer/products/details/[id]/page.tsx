@@ -49,6 +49,7 @@ export default function AddShoppingCart({params}:Props){
     const [options, setOptions] = useState<Option[]>([])
     const [maxQuantity, setMaxQuantity] = useState<number>(0)
     const [quantity, setQuantity] = useState<number>(0)
+    const [image,setImage] = useState("")
     const router = useRouter()
 
     useEffect(() => {
@@ -60,6 +61,7 @@ export default function AddShoppingCart({params}:Props){
                 setSizes(response2)
                 const response = await getProduct(params.id);
                 setProduct(response)
+                setImage(response.mainImageUrl)
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -90,6 +92,18 @@ export default function AddShoppingCart({params}:Props){
         setSelectedSize(id)
     } 
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+
+        fetchData();
+    }, [image]);
     
     const handleOption = async (id:string) => {
         setSelectedOption(id);
@@ -98,9 +112,11 @@ export default function AddShoppingCart({params}:Props){
             if(element.id === id){
                 setMaxQuantity(Number(element.availableUnits))
                 setSelectedOptionEnun(element.description)
+                setImage(element.imageUrl)
             }
             console.log(maxQuantity)
         }
+        
     }
 
     const handleIncrement = async () =>{
@@ -124,7 +140,8 @@ export default function AddShoppingCart({params}:Props){
                 optionId:selectedOption,
                 amount:quantity,
                 size:selectedSizeEnun,
-                color:selectedOptionEnun
+                color:selectedOptionEnun,
+                mainImageUrl:image
                 
             }
             addProduct(element)
@@ -157,7 +174,7 @@ export default function AddShoppingCart({params}:Props){
             <div className="flex-1 flex justify-center items-center">
                 <Image 
                 priority
-                src={product.mainImageUrl}
+                src={image}
                 alt="Product"
                 width={2000}
                 height={2000}/>
