@@ -11,6 +11,7 @@ import { Mail, MapPin } from "lucide-react";
 import Cookies from 'js-cookie';
 import EditProfileModal from '../components/EditProfileModal';
 
+
 export default function BuyerNavbar() {
     const router = useRouter();
     const [showCart, setShowCart] = useState(false);
@@ -51,15 +52,18 @@ export default function BuyerNavbar() {
         setCurrentUser(updatedUser);
     };
 
+    const handleFilter = (filter:string) =>{
+        
+    }
+
     return (
         <nav className="bg-[#2B2D42] text-white p-4 relative">
             <div className="container mx-auto flex justify-between items-center">
                 <h1 className="text-2xl">Modi</h1>
                 <div>
-                    <button onClick={() => router.push('/seller/products')} className="mr-8">Hombre</button>
-                    <button onClick={() => router.push('/seller/orders')} className="mr-8">Mujer</button>
-                    <button onClick={() => router.push('/seller/categories')}>Niño</button>
-                    <button className="bg-red-500 ml-4 rounded-sm p-1">%Descuento</button>
+                    <button onClick={() => router.push('')} className="mr-8">Hombre</button>
+                    <button onClick={() => router.push('')} className="mr-8">Mujer</button>
+                    <button onClick={() => router.push('')}>Niño</button>
                 </div>
 
                 <div className="flex items-center gap-4">

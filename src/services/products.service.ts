@@ -3,8 +3,16 @@ import Cookies from "js-cookie";
 import { Product } from "@/interfaces/product";
 import { CreateProductDto } from "@/dto/product/createProduct.dto";
 
+interface QueryParams {
+    category?: string;
+    priceMin?: string;
+    priceMax?: string;
+    qualification?:string
+}
+
 export class ProductsService {
     protected readonly axios: AxiosInstance;
+    
 
     constructor(url: string) {
         this.axios = axios.create({

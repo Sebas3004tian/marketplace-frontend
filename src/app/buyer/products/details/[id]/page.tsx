@@ -39,7 +39,9 @@ export default function AddShoppingCart({params}:Props){
     const [sizes, setSizes] = useState<Size[]>([])
     const [loading, setLoading] = useState(false)
     const [selectedSize, setSelectedSize] = useState("")
+    const [selectedSizeEnun, setSelectedSizeEnun] = useState("")
     const [selectedOption, setSelectedOption] = useState("")
+    const [selectedOptionEnun, setSelectedOptionEnun] = useState("")
     const [product, setProduct] = useState<Product>(fakeProduct)
     const {getProduct} = useGetProduct()
     const {getSizesByProduct} = useGetSizesByProduct()
@@ -47,6 +49,7 @@ export default function AddShoppingCart({params}:Props){
     const [options, setOptions] = useState<Option[]>([])
     const [maxQuantity, setMaxQuantity] = useState(0)
     const [quantity, setQuantity] = useState(1)
+    const router = useRouter()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,15 +83,18 @@ export default function AddShoppingCart({params}:Props){
         fetchData();
     }, [selectedSize]);
 
-    const handleSize = async (id:string) =>{
+    const handleSize = async (id:string, size:string) =>{
+        setSelectedSizeEnun(size)
         setSelectedSize(id)
+       
+
     
     const handleOption = async (id:string) => {
-        setLoading(true);
         setSelectedOption(id);
-        let max = options.find((opt) => opt.id === selectedOption);
+        const max = options.find((opt) => opt.id === selectedOption);
         setMaxQuantity(max?.availableUnits || 0)
-        setLoading(false);
+        setSelectedOptionEnun(max?.description || "")
+        
 
     }
 
@@ -104,7 +110,10 @@ export default function AddShoppingCart({params}:Props){
         let element: NewProduct = {
             ...product,
             optionId:selectedOption,
-            amount:quantity
+            amount:quantity,
+            size:selectedSizeEnun,
+            color:selectedOptionEnun
+            
         }
         addProduct(element)
     }
@@ -155,7 +164,7 @@ export default function AddShoppingCart({params}:Props){
                 <p className="font-semibold text-gray-700">Tamaño</p>
                 <div className="flex space-x-4 mt-2">
                     {sizes?.map((size)=>(
-                        <button className="px-4 py-2 rounded-lg border text-gray-700 hover:bg-gray-200" onClick={()=>handleSize(size.id)}>{size.name} </button>
+                        <button className="px-4 py-2 rounded-lg border text-gray-700 hover:bg-gray-200" onClick={()=>handleSize(size.id, size.name)}>{size.name} </button>
                     ))}
 
                 </div>
