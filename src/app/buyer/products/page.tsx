@@ -16,7 +16,7 @@ export default function HomeBuyerPage(){
     const { getProducts } = useGetProducts()
     const [loading, setLoading] = useState(false)
     const [products, setProducts] = useState<Product[]>([])
-    const [product, setCurrentProduct] = useState<Product|null>(null)
+    //const [product, setCurrentProduct] = useState<Product|null>(null)
     const router = useRouter()
     const { productFilter} = useShoppingCart();
     const { getProductsFiltered } = useGetProductsFiltered()
