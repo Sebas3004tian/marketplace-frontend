@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface ProductCardProps {
 
     mainImageUrl: string
@@ -7,6 +5,7 @@ interface ProductCardProps {
     price: number
     onChangePage: () => void
   }
+
 
 export default function ProductCardBuyer({ mainImageUrl, name, price, onChangePage}: ProductCardProps) {
   return (

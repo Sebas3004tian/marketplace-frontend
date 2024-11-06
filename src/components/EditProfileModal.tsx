@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useEditUser } from "@/hooks/user/useEditUser";
-import { address } from 'framer-motion/client';
 
-const EditProfileModal = ({ isOpen, onClose, currentUser, onUserUpdate }) => {
+interface  UpdateUser {
+    id: string;
+    fullName: string;
+    email: string;
+    address: string;
+}
+
+interface EditProfileModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    currentUser: UpdateUser;
+    onUserUpdate: (updatedUser: UpdateUser) => void;
+}
+
+const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, currentUser, onUserUpdate }) => {
     const { editUser } = useEditUser();
     const [formData, setFormData] = useState({
         id: '',
@@ -24,7 +36,7 @@ const EditProfileModal = ({ isOpen, onClose, currentUser, onUserUpdate }) => {
         }
     }, [currentUser]);
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: { target: { name: string; value: string; }; }) => {
         const { name, value } = e.target;
         setFormData(prev => ({
         ...prev,
