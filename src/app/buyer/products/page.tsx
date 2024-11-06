@@ -7,6 +7,8 @@ import  ProductCardBuyer from "@/components/ProductCardBuyer"
 import { useGetProductsFiltered} from "@/hooks/products/useGetProductsFiltered";
 import { useGetProducts } from "@/hooks/products/useGetProducts";
 import {ClipLoader} from "react-spinners"; 
+import { useShoppingCart } from "@/hooks/cart/useShoppingCart";
+import { QueryParams } from "@/interfaces/queryParams";
 
 
 export default function HomeBuyerPage(){
@@ -16,8 +18,10 @@ export default function HomeBuyerPage(){
     const [products, setProducts] = useState<Product[]>([])
     const [product, setCurrentProduct] = useState<Product|null>(null)
     const router = useRouter()
+    const { productFilter} = useShoppingCart();
+    const { getProductsFiltered } = useGetProductsFiltered()
 
-    useEffect(() => {
+    /*useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -28,9 +32,35 @@ export default function HomeBuyerPage(){
                 console.error('Error fetching products:', error);
             }
         };
+        fetchData();
+    }, []);*/
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const query: QueryParams = {
+                    category:productFilter
+                }
+                let response: Product[]
+                if(productFilter === "All"){
+                    response = await getProducts();
+                }
+                else{
+                    response = await getProductsFiltered(query);
+                }
+                setProducts(response);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
 
         fetchData();
-    }, [setProducts]);
+    }, [productFilter]);
+    
+
+
 
     const handleSubmit = async (id:string) =>{
         router.push(`/buyer/products/details/${id}`)

@@ -47,18 +47,19 @@ export default function AddShoppingCart({params}:Props){
     const {getSizesByProduct} = useGetSizesByProduct()
     const {getOptionsBySize} = useGetOptionsBySize()
     const [options, setOptions] = useState<Option[]>([])
-    const [maxQuantity, setMaxQuantity] = useState(0)
-    const [quantity, setQuantity] = useState(1)
+    const [maxQuantity, setMaxQuantity] = useState<number>(0)
+    const [quantity, setQuantity] = useState<number>(0)
     const router = useRouter()
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
+                console.log(params.id)
                 const response2 = await getSizesByProduct(params.id);
                 setSizes(response2)
                 const response = await getProduct(params.id);
-                setProduct(response);
+                setProduct(response)
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -73,6 +74,7 @@ export default function AddShoppingCart({params}:Props){
             try {
                 setLoading(true);
                 const response = await getOptionsBySize(selectedSize);
+                console.log("inside size change")
                 setOptions(response)
                 setLoading(false);
             } catch (error) {
@@ -86,40 +88,51 @@ export default function AddShoppingCart({params}:Props){
     const handleSize = async (id:string, size:string) =>{
         setSelectedSizeEnun(size)
         setSelectedSize(id)
-       
+    } 
 
     
     const handleOption = async (id:string) => {
         setSelectedOption(id);
-        const max = options.find((opt) => opt.id === selectedOption);
-        setMaxQuantity(max?.availableUnits || 0)
-        setSelectedOptionEnun(max?.description || "")
-        
-
+        const max = options.find((item) => item.id === selectedOption);
+        for(const element of options){
+            if(element.id === id){
+                setMaxQuantity(Number(element.availableUnits))
+                setSelectedOptionEnun(element.description)
+            }
+            console.log(maxQuantity)
+        }
     }
 
     const handleIncrement = async () =>{
-        if(quantity < maxQuantity) setQuantity(quantity+1)
+        if(quantity < maxQuantity){
+            setQuantity(quantity+1)
+        } 
+        console.log(maxQuantity)
     }
 
     const handleDecrement = async () =>{
-        if(quantity > 1) setQuantity(quantity-1)
+        if(quantity > 0){
+            setQuantity(quantity-1)
+        } 
+        console.log(maxQuantity)
     }
 
     const handleSubmit = async () =>{
-        let element: NewProduct = {
-            ...product,
-            optionId:selectedOption,
-            amount:quantity,
-            size:selectedSizeEnun,
-            color:selectedOptionEnun
-            
+        if(quantity !==0){
+            const element: NewProduct = {
+                ...product,
+                optionId:selectedOption,
+                amount:quantity,
+                size:selectedSizeEnun,
+                color:selectedOptionEnun
+                
+            }
+            addProduct(element)
         }
-        addProduct(element)
+       
     }
 
     return(
-
         <div className='relative'>
             {/*Flecha*/}
             <button className='absolute top-0 left-0 p-3 bg-gray-200 rounded-full shadow hover:bg-gray-300 transition' onClick={() => window.history.back()}>
@@ -194,7 +207,7 @@ export default function AddShoppingCart({params}:Props){
                 <p className="font-semibold text-gray-700">Cantidad</p>
                 <div className="flex items-center mt-2">
                     <button className="px-3 py-1 border rounded-l-lg text-gray-700 hover:bg-gray-200" onClick={()=>handleDecrement()}>-</button>
-                    <input type="number" value={quantity} className="w-12 text-center border-t border-b border-gray-300 focus:outline-none" disabled={maxQuantity === 0} />
+                    <input type="text" value={quantity} className="w-12 text-center border-t border-b border-gray-300 focus:outline-none"/>
                     <button className="px-3 py-1 border rounded-r-lg text-gray-700 hover:bg-gray-200" onClick={()=>handleIncrement()}>+</button>
                 </div>
             </div>
@@ -217,5 +230,5 @@ export default function AddShoppingCart({params}:Props){
         </div>
     </div>
     )
-}
-}
+
+    }

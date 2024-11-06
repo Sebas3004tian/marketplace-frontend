@@ -1,8 +1,10 @@
+"use client"
 import { useShoppingCart } from '@/hooks/cart/useShoppingCart';
 import  Image  from 'next/image'
 import React, { useEffect, useState } from 'react';
 import { useCreateOrder } from '@/hooks/orders/useCreateOrders';
 import { useRouter } from 'next/navigation';
+import BackVector  from '@/components/svg/Arrow.svg'
 
 export default function PurchaseProduct(){
     const { products, removeProduct, clearShoppingCart} = useShoppingCart();
@@ -73,9 +75,20 @@ export default function PurchaseProduct(){
     }
 
     return (
+      <div className='relative'>
+         <button className='absolute top-0 left-0 p-3 bg-gray-200 rounded-full shadow hover:bg-gray-300 transition' onClick={() => router.push(`/buyer/products/`)}>
+                <Image 
+                priority
+                src={BackVector}
+                alt="Back"
+                width={30}
+                height={30}/>
+
+            </button>
+      
         <div className="min-h-screen bg-gray-100 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl">
-            <h1 className="text-2xl font-bold mb-4">Cart</h1>
+            <h1 className="text-2xl font-bold mb-4">Carrito</h1>
     
             {products.map((item) => (
               <div key={item.id} className="flex justify-between items-center border-b pb-4 mb-4">
@@ -90,41 +103,44 @@ export default function PurchaseProduct(){
                   <div>
                     <p className="font-semibold">{item.name}</p>
                     <p className="text-gray-500">{item.color}, {item.size}</p>
-                    <p className="text-sm mt-1"> {item.amount}</p>
+                    <div className='gap-28 flex' >
+                      <p className="text-sm mt-1"> Cantidad {item.amount}</p>
+                      <button 
+                        className="text-black mt-2 text-base align-text-top underline"
+                        onClick={() => removeItem(item.id)}>
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                  <button 
-                  className="text-red-500 mt-2 text-sm hover:underline"
-                  onClick={() => removeItem(item.id)}
-                >
-                  Remove
-                </button>
+                  
                 </div>
-                <p className="text-lg font-semibold">${item.price.toFixed(2)}</p>
+                <p className="text-lg font-semibold">${item.price}</p>
                 <a> </a>
               </div>
             ))}
     
             <div className="flex justify-end">
               <div className="w-full max-w-sm bg-gray-50 p-4 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+                <h2 className="text-xl font-semibold mb-4">Resumen</h2>
                 <div className="flex justify-between mb-2">
-                  <p>Shipping</p>
-                  <p>Free</p>
+                  <p>Envío:</p>
+                  <p>Gratis</p>
                 </div>
                 <div className="flex justify-between mb-4">
-                  <p>Sales Tax</p>
-                  <p>Calculated at checkout</p>
+                  <p>Impuestos:</p>
+                  <p>$0</p>
                 </div>
                 <div className="flex justify-between font-semibold text-lg border-t pt-4">
                   <p>Subtotal</p>
-                  <p>${subtotal.toFixed(2)}</p>
+                  <p>${subtotal}</p>
                 </div>
                 <button className="w-full mt-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" onClick={()=> handleSubmit()}>
-                  Checkout
+                  Pagar
                 </button>
               </div>
             </div>
           </div>
         </div>
+      </div>
     );
 }

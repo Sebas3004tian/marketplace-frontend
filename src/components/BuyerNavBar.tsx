@@ -10,15 +10,17 @@ import ShoppingCart from "./ShoppingCart";
 import { Mail, MapPin } from "lucide-react";
 import Cookies from 'js-cookie';
 import EditProfileModal from '../components/EditProfileModal';
+import { useGetProductsFiltered } from "@/hooks/products/useGetProductsFiltered";
 
 
 export default function BuyerNavbar() {
     const router = useRouter();
     const [showCart, setShowCart] = useState(false);
-    const { products } = useShoppingCart();
+    const { products, changeTypeProduct } = useShoppingCart();
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState({id:"", fullName: "", email: "", address: "" });
+    const { getProductsFiltered } = useGetProductsFiltered()
 
     useEffect(() => {
         const cookieValue = Cookies.get('currentUser');
@@ -33,6 +35,7 @@ export default function BuyerNavbar() {
             });
         }
     }, []);
+
 
     const toggleProfileMenu = () => {
         setProfileMenuOpen(!isProfileMenuOpen);
@@ -53,17 +56,19 @@ export default function BuyerNavbar() {
     };
 
     const handleFilter = (filter:string) =>{
-        
+        changeTypeProduct(filter)
     }
 
     return (
         <nav className="bg-[#2B2D42] text-white p-4 relative">
-            <div className="container mx-auto flex justify-between items-center">
+            <div className="container mx-auto flex justify-between items-center gap-3">
                 <h1 className="text-2xl">Modi</h1>
                 <div>
-                    <button onClick={() => router.push('')} className="mr-8">Hombre</button>
-                    <button onClick={() => router.push('')} className="mr-8">Mujer</button>
-                    <button onClick={() => router.push('')}>Niño</button>
+                    <button onClick={() => handleFilter('All')} className="mr-8">Todas las catergorias</button>
+                    <button onClick={() => handleFilter('Hombre')} className="mr-8">Hombre</button>
+                    <button onClick={() => handleFilter('Mujer')} className="mr-8">Mujer</button>
+                    <button onClick={() => handleFilter('Niño')} className="mr-8">Niño</button>
+                    <button onClick={() => router.push(`/buyer/products/history`)}>Historial de Compras</button>
                 </div>
 
                 <div className="flex items-center gap-4">
