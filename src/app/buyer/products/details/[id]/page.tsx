@@ -12,6 +12,8 @@ import { useGetSizesByProduct } from '@/hooks/sizes/useGetSizesByProduct';
 import { useGetOptionsBySize } from '@/hooks/option/useGetOptionsBySize';
 import { Option } from '@/interfaces/option';
 import { NewProduct } from '@/interfaces/newProduct';
+import { Review } from '@/interfaces/review';
+import { useGetReview } from '@/hooks/review/useGetReview';
 
 interface Props{
 
@@ -32,23 +34,25 @@ export default function AddShoppingCart({ params }: Props) {
         mainImageUrl: "",
         subcategory: "",
         category: "",
-    };
 
-    const { addProduct } = useShoppingCart(); // removed unused 'products' variable
-    const [sizes, setSizes] = useState<Size[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [selectedSize, setSelectedSize] = useState("");
-    const [selectedSizeEnun, setSelectedSizeEnun] = useState("");
-    const [selectedOption, setSelectedOption] = useState("");
-    const [selectedOptionEnun, setSelectedOptionEnun] = useState("");
-    const [product, setProduct] = useState<Product>(fakeProduct);
-    const { getProduct } = useGetProduct();
-    const { getSizesByProduct } = useGetSizesByProduct();
-    const { getOptionsBySize } = useGetOptionsBySize();
-    const [options, setOptions] = useState<Option[]>([]);
-    const [maxQuantity, setMaxQuantity] = useState<number>(0);
-    const [quantity, setQuantity] = useState<number>(0);
-    const [image, setImage] = useState("");
+    } 
+    const { addProduct } = useShoppingCart();
+    const [sizes, setSizes] = useState<Size[]>([])
+    const [loading, setLoading] = useState(false)
+    const [selectedSize, setSelectedSize] = useState("")
+    const [selectedSizeEnun, setSelectedSizeEnun] = useState("")
+    const [selectedOption, setSelectedOption] = useState("")
+    const [selectedOptionEnun, setSelectedOptionEnun] = useState("")
+    const [product, setProduct] = useState<Product>(fakeProduct)
+    const {getProduct} = useGetProduct()
+    const {getSizesByProduct} = useGetSizesByProduct()
+    const {getOptionsBySize} = useGetOptionsBySize()
+    const [options, setOptions] = useState<Option[]>([])
+    const [maxQuantity, setMaxQuantity] = useState<number>(0)
+    const [quantity, setQuantity] = useState<number>(0)
+    const [image,setImage] = useState(fakeProduct.mainImageUrl)
+    const [reviews, setReviews] = useState<Review[]>([])
+    const {getReview} = useGetReview()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,18 +61,22 @@ export default function AddShoppingCart({ params }: Props) {
                 const response2 = await getSizesByProduct(params.id);
                 setSizes(response2);
                 const response = await getProduct(params.id);
-                setProduct(response);
-                setImage(response.mainImageUrl);
+                setProduct(response)
+                setImage(response.mainImageUrl)
+                const response3 = await getReview(params.id)
+                setReviews(response3)
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
+                setLoading(false);
             }
         };
 
         fetchData();
-    }, [getProduct, getSizesByProduct, params.id]);
+    }, [params.id]);
 
     useEffect(() => {
+        if (selectedSize === "") return;
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -81,7 +89,7 @@ export default function AddShoppingCart({ params }: Props) {
         };
 
         fetchData();
-    }, [getOptionsBySize, selectedSize]);
+    }, [selectedSize]);
 
     const handleSize = (id: string, size: string) => {
         setSelectedSizeEnun(size);
@@ -89,11 +97,11 @@ export default function AddShoppingCart({ params }: Props) {
     };
 
     const handleOption = (id: string) => {
-        setSelectedOption(id);
         const selected = options.find((item) => item.id === id);
         if (selected) {
             setMaxQuantity(Number(selected.availableUnits));
             setSelectedOptionEnun(selected.description);
+            setSelectedOption(id);
             setImage(selected.imageUrl);
         }
     };
@@ -141,7 +149,13 @@ export default function AddShoppingCart({ params }: Props) {
                 )}
 
                 <div className="flex-1 flex justify-center items-center">
-                    <Image priority src={image} alt="Product" width={2000} height={2000} />
+                    {image ? (
+                        <Image priority src={image} alt="Product" width={2000} height={2000}/>
+                    ) : (
+                        <div className="w-full h-[400px] bg-gray-200 flex items-center justify-center">
+                            <p>No image available</p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex-1 mt-8 md:mt-0 md:ml-8 space-y-6">
@@ -218,6 +232,30 @@ export default function AddShoppingCart({ params }: Props) {
                         <p className="font-semibold text-gray-700">Descripción</p>
                         <p className="text-gray-600 mt-2">{product?.description}</p>
                     </div>
+                </div>
+            </div>
+
+            {/*Descripción del Producto*/} 
+            <div>
+                <p className="font-semibold text-gray-700">Descripción</p>
+                <p className="text-gray-600 mt-2">
+                    {product?.description}
+                </p>
+                
+            </div>
+
+            {/* Sección de Comentarios */}
+            <div className="mt-8">
+                <p className="font-semibold text-gray-700">Comentarios</p>
+                <div className="space-y-4 mt-4">
+                {reviews.map((comment, index) => (
+                    <div key={index} className="p-4 border rounded-lg shadow-sm">
+                    <div className="flex items-center space-x-2 mb-2">
+                        <p className="font-semibold text-gray-800">{`Rating: ${comment.rating} / 5`}</p>
+                    </div>
+                    <p className="text-gray-600">{comment.comment}</p>
+                    </div>
+                ))}
                 </div>
             </div>
         </div>

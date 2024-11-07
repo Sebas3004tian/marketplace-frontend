@@ -18,10 +18,10 @@ export default function HomeBuyerPage(){
     const [products, setProducts] = useState<Product[]>([])
     //const [product, setCurrentProduct] = useState<Product|null>(null)
     const router = useRouter()
-    const { productFilter} = useShoppingCart();
+    const { productFilter } = useShoppingCart();
     const { getProductsFiltered } = useGetProductsFiltered()
 
-    /*useEffect(() => {
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -33,7 +33,7 @@ export default function HomeBuyerPage(){
             }
         };
         fetchData();
-    }, []);*/
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,11 +45,12 @@ export default function HomeBuyerPage(){
                 let response: Product[]
                 if(productFilter === "All"){
                     response = await getProducts();
+                    setProducts(response);
                 }
-                else{
+                else if(query.category){
                     response = await getProductsFiltered(query);
+                    setProducts(response);
                 }
-                setProducts(response);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -59,9 +60,6 @@ export default function HomeBuyerPage(){
         fetchData();
     }, [productFilter]);
     
-
-
-
     const handleSubmit = async (id:string) =>{
         router.push(`/buyer/products/details/${id}`)
     }
