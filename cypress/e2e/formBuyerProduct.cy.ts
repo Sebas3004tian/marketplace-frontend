@@ -19,10 +19,10 @@ describe('UserproductOrder', () => {
 
     it('Ver informacion del producto', () => {
         cy.get(':nth-child(1) > .w-full').click()
-        cy.get(':nth-child(3) > .text-gray-600').should('contain', 'Producto nuevoooooooooooo')
+        cy.get(':nth-child(3) > .text-gray-600').should('contain', 'Vestido de mujer, negro')
     })
     it('Add and delete product to shopping cart', () => {
-        cy.get(':nth-child(4) > .w-full').click()
+        cy.get(':nth-child(1) > .w-full').click()
 
         cy.get('.px-4').click()
         cy.get('.mt-8 > :nth-child(3) > .p-2').select('Corto en seda con cinturón')
@@ -38,7 +38,7 @@ describe('UserproductOrder', () => {
     })
 
     it('Empty shopping cart', () => {
-        cy.get(':nth-child(4) > .w-full').click()
+        cy.get(':nth-child(1) > .w-full').click()
 
         cy.get('.px-4').click()
         cy.get('.mt-8 > :nth-child(3) > .p-2').select('Corto en seda con cinturón')
@@ -53,7 +53,7 @@ describe('UserproductOrder', () => {
     })
 
     it('Add and delete product to shopping cart and pay', () => {
-        cy.get(':nth-child(4) > .w-full').click()
+        cy.get(':nth-child(1) > .w-full').click()
 
         cy.get('.px-4').click()
         cy.get('.mt-8 > :nth-child(3) > .p-2').select('Corto en seda con cinturón')
