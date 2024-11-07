@@ -3,7 +3,7 @@ import { Product } from "@/interfaces/product";
 
 export const useUpdateProduct = () => {
     const updateProduct = async (id: string, updatedProductData: Partial<Product>) => {
-        const productsService = new ProductsService("http://localhost:3001/");
+        const productsService = new ProductsService("https://marketplace-backend-production-d4eb.up.railway.app/");
         try {
             await productsService.update(id, updatedProductData);
         } catch (error) {

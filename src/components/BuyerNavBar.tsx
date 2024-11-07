@@ -10,7 +10,6 @@ import ShoppingCart from "./ShoppingCart";
 import { Mail, MapPin } from "lucide-react";
 import Cookies from 'js-cookie';
 import EditProfileModal from '../components/EditProfileModal';
-import { useGetProductsFiltered } from "@/hooks/products/useGetProductsFiltered";
 
 
 export default function BuyerNavbar() {
@@ -20,7 +19,6 @@ export default function BuyerNavbar() {
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState({id:"", fullName: "", email: "", address: "" });
-    const { getProductsFiltered } = useGetProductsFiltered()
 
     useEffect(() => {
         const cookieValue = Cookies.get('currentUser');

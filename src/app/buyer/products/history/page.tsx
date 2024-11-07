@@ -1,5 +1,5 @@
 "use client"
-import  Image  from 'next/image'
+import Image from 'next/image'
 import React, { useEffect, useState } from 'react';
 import { useGetBuyerOrders } from '@/hooks/orders/useGetBuyerOrders';
 import { useRouter } from 'next/navigation';
@@ -18,22 +18,21 @@ export default function PurchaseProduct(){
     const [currentProduct, setCurrentProduct] = useState("")
     const { getBuyerOrders } = useGetBuyerOrders()
     const router = useRouter()
-
+  
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setLoading(true)
-                const response = await getBuyerOrders()
-                const regex = /^\d{4}-\d{2}-\d{2}/;
-                setOrders(response)
-                setLoading(false)
+                setLoading(true);
+                const response = await getBuyerOrders();
+                setOrders(response);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
         };
 
         fetchData();
-    }, [setInitial]);
+    }, []);
 
     const handleSubmit= (id:string) =>{
         setCurrentProduct(id)
@@ -44,15 +43,15 @@ export default function PurchaseProduct(){
     return (
         <div className='relative'>
             <button className='absolute top-0 left-0 p-3 bg-gray-200 rounded-full shadow hover:bg-gray-300 transition' onClick={() => router.push(`/buyer/products/`)}>
-                <Image 
-                priority
-                src={BackVector}
-                alt="Back"
-                width={30}
-                height={30}/>
-
+                <Image
+                    priority
+                    src={BackVector}
+                    alt="Back"
+                    width={30}
+                    height={30}
+                />
             </button>
-        
+
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl">
                 <h1 className="text-2xl font-bold mb-4">Historial de Ordenes</h1>
@@ -84,10 +83,7 @@ export default function PurchaseProduct(){
                         </div>
                     </div>
                     <p className="text-lg font-semibold">${item.productPrice}</p>
-                    
                 </div>
-                ))}
-            </div>
             </div>
             <ReviewModal
                 isOpen={isOpen}
@@ -96,5 +92,5 @@ export default function PurchaseProduct(){
             />
 
         </div>
-    );  
+    );
 }
