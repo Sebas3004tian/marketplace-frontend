@@ -11,5 +11,6 @@ export interface Order {
     sellerName: string,
     sellerEmail: string,
     productName: string,
-    productPrice: number
+    productPrice: number,
+    productId:string
 }
