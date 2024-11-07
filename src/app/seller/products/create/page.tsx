@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useGetCategories} from '@/hooks/categories/useGetCategories';
-import {useGetSubcategoriesByCategory} from '@/hooks/subcategories/useGetSubcategoriesByCategory';
+import {useGetMySubcategoriesByCategory} from '@/hooks/subcategories/useGetMySubcategoriesByCategory';
 import {useCreateProduct} from '@/hooks/products/useCreateProduct';
 import {useUploadImage} from '@/hooks/common/useUploadImage';
 import {Category} from '@/interfaces/category';
@@ -15,7 +15,7 @@ import {useRouter} from "next/navigation";
 const CrearProducto = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<CreateProductDto>();
     const { getCategories } = useGetCategories();
-    const { getSubcategoriesByCategory } = useGetSubcategoriesByCategory();
+    const { getMySubcategoriesByCategory } = useGetMySubcategoriesByCategory();
     const { createProduct } = useCreateProduct();
     const { uploadImage } = useUploadImage();
     const router = useRouter();
@@ -38,7 +38,7 @@ const CrearProducto = () => {
         if (selectedCategory) {
             (async () => {
                 setLoading(true);
-                const subcategories = await getSubcategoriesByCategory(selectedCategory);
+                const subcategories = await getMySubcategoriesByCategory(selectedCategory);
                 if (subcategories) setSubcategorias(subcategories);
                 setLoading(false);
             })();
