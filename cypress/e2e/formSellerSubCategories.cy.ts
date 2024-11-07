@@ -1,5 +1,6 @@
-describe('template spec', () => {
+describe('SubCategories', () => {
   beforeEach(() => {
+    cy.viewport(1440, 900);
     cy.visit('/')
     cy.contains('¿Ya tienes cuenta? Ingresa Aquí').click()
 

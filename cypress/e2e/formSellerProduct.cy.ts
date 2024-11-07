@@ -1,7 +1,8 @@
 import 'cypress-file-upload';
 
-describe('template spec', () => {
+describe('ProductsS', () => {
   beforeEach(() => {
+    cy.viewport(1440, 900);
     cy.visit('/')
     cy.contains('¿Ya tienes cuenta? Ingresa Aquí').click()
 
@@ -63,12 +64,21 @@ describe('template spec', () => {
     });
   });
 
+  it('Edit test product', () => {
+    cy.get('.absolute > .bg-\\[\\#2B2D42\\]').click()
+
+    cy.get(':nth-child(1) > .w-full').type(' Editado')
+
+    cy.get('.bg-blue-500').click()
+
+    cy.get('.text-xl').should('contain', 'Producto de prueba Editado')
+  })
+
   it('should delete a product', () => {
     cy.get(':nth-child(1) > .top-4 > img').click()
     cy.get('.bg-red-500').click()
     cy.get('.text-gray-600').should('contain', 'No hay productos disponibles.')
     cy.get(':nth-child(1) > .text-3xl').should('contain', '0')
   })
-  
-  
+
 })

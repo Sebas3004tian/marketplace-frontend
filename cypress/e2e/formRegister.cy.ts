@@ -2,6 +2,7 @@
 
 describe('Seller Registration', () => {
   beforeEach(() => {
+    cy.viewport(1440, 900);
     cy.visit('/')
     cy.get('.justify-start > a > .flex').click()
   })
