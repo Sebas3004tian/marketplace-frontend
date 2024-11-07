@@ -1,5 +1,5 @@
 import axios, {AxiosInstance}  from 'axios';
-import { createReviewDto} from '@/dto/review/createReview.dto'
+import { CreateReviewDto} from '@/dto/review/createReview.dto'
 import Cookies from "js-cookie";
 
 export class ReviewService {
@@ -24,7 +24,7 @@ export class ReviewService {
         return response.data;
     }
 
-    public async create(reviewDto:createReviewDto) {
+    public async create(reviewDto: CreateReviewDto) {
         const response = await this.axios.post(`/review/product`,reviewDto ,{
             headers: {
                 Authorization: `Bearer ${Cookies.get("token")}`

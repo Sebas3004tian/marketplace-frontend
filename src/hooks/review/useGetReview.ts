@@ -3,7 +3,7 @@ import { ReviewService } from "@/services/review.service";
 
 export const useGetReview = () => {
     const getReview = async (id: string) => {
-        const reviewService = new ReviewService("http://localhost:3001/");
+        const reviewService = new ReviewService("https://marketplace-backend-production-d4eb.up.railway.app/");
         const review = await reviewService.getAll(id);
 
         return review as Review[];

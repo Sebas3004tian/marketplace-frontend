@@ -36,7 +36,7 @@ export default function AddShoppingCart({ params }: Props) {
         category: "",
 
     } 
-    const { products, addProduct } = useShoppingCart();
+    const { addProduct } = useShoppingCart();
     const [sizes, setSizes] = useState<Size[]>([])
     const [loading, setLoading] = useState(false)
     const [selectedSize, setSelectedSize] = useState("")
@@ -50,9 +50,8 @@ export default function AddShoppingCart({ params }: Props) {
     const [options, setOptions] = useState<Option[]>([])
     const [maxQuantity, setMaxQuantity] = useState<number>(0)
     const [quantity, setQuantity] = useState<number>(0)
-    const [image,setImage] = useState("")
+    const [image,setImage] = useState(fakeProduct.mainImageUrl)
     const [reviews, setReviews] = useState<Review[]>([])
-    const router = useRouter()
     const {getReview} = useGetReview()
 
     useEffect(() => {
@@ -69,13 +68,15 @@ export default function AddShoppingCart({ params }: Props) {
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
+                setLoading(false);
             }
         };
 
         fetchData();
-    }, [getProduct, getSizesByProduct, params.id]);
+    }, [params.id]);
 
     useEffect(() => {
+        if (!selectedSize) return;
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -88,7 +89,7 @@ export default function AddShoppingCart({ params }: Props) {
         };
 
         fetchData();
-    }, [getOptionsBySize, selectedSize]);
+    }, [selectedSize]);
 
     const handleSize = (id: string, size: string) => {
         setSelectedSizeEnun(size);
@@ -96,6 +97,7 @@ export default function AddShoppingCart({ params }: Props) {
     };
 
     const handleOption = (id: string) => {
+        if(id === "") return;
         setSelectedOption(id);
         const selected = options.find((item) => item.id === id);
         if (selected) {
@@ -148,7 +150,13 @@ export default function AddShoppingCart({ params }: Props) {
                 )}
 
                 <div className="flex-1 flex justify-center items-center">
-                    <Image priority src={image} alt="Product" width={2000} height={2000} />
+                    {image ? (
+                        <Image priority src={image} alt="Product" width={2000} height={2000}/>
+                    ) : (
+                        <div className="w-full h-[400px] bg-gray-200 flex items-center justify-center">
+                            <p>No image available</p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex-1 mt-8 md:mt-0 md:ml-8 space-y-6">
@@ -255,9 +263,6 @@ export default function AddShoppingCart({ params }: Props) {
                 ))}
                 </div>
             </div>
-            </div>
-
-
         </div>
     );
 }
