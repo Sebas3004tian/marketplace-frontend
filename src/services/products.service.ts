@@ -2,9 +2,12 @@ import axios, { AxiosInstance } from 'axios';
 import Cookies from "js-cookie";
 import { Product } from "@/interfaces/product";
 import { CreateProductDto } from "@/dto/product/createProduct.dto";
+import { QueryParams } from '@/interfaces/queryParams';
+
 
 export class ProductsService {
     protected readonly axios: AxiosInstance;
+    
 
     constructor(url: string) {
         this.axios = axios.create({
@@ -44,12 +47,22 @@ export class ProductsService {
         return response.data;
     }
 
-    public async getProductFiltered() {
-        const response = await this.axios.get(`/product/all/`, {
-            headers: {
-                Authorization: `Bearer ${Cookies.get("token")}`
+    public async getProductFiltered(filters: QueryParams) {
+        
+        const query = new URLSearchParams();
+
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                query.append(key, String(value));
             }
         });
+
+        const response = await this.axios.get(`/product/all/filter?${query.toString()}`, {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+        });
+
         return response.data;
     }
 

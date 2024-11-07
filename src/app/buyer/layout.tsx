@@ -5,7 +5,7 @@ import { ShoppingCartProvider } from '@/context/cartContent';
 export default function Layout({ children }: { children: ReactNode }) {
     return (
         <div className="bg-gray-100 text-gray-900">
-             <ShoppingCartProvider>
+            <ShoppingCartProvider>
                 <BuyerNavbar />
                 <main className="p-4">{children}</main>
             </ShoppingCartProvider>
