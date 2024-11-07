@@ -12,6 +12,8 @@ import { useGetSizesByProduct } from '@/hooks/sizes/useGetSizesByProduct';
 import { useGetOptionsBySize } from '@/hooks/option/useGetOptionsBySize';
 import { Option } from '@/interfaces/option';
 import { NewProduct } from '@/interfaces/newProduct';
+import { Review } from '@/interfaces/review';
+import { useGetReview } from '@/hooks/review/useGetReview';
 
 interface Props{
 
@@ -32,23 +34,26 @@ export default function AddShoppingCart({ params }: Props) {
         mainImageUrl: "",
         subcategory: "",
         category: "",
-    };
 
-    const { addProduct } = useShoppingCart(); // removed unused 'products' variable
-    const [sizes, setSizes] = useState<Size[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [selectedSize, setSelectedSize] = useState("");
-    const [selectedSizeEnun, setSelectedSizeEnun] = useState("");
-    const [selectedOption, setSelectedOption] = useState("");
-    const [selectedOptionEnun, setSelectedOptionEnun] = useState("");
-    const [product, setProduct] = useState<Product>(fakeProduct);
-    const { getProduct } = useGetProduct();
-    const { getSizesByProduct } = useGetSizesByProduct();
-    const { getOptionsBySize } = useGetOptionsBySize();
-    const [options, setOptions] = useState<Option[]>([]);
-    const [maxQuantity, setMaxQuantity] = useState<number>(0);
-    const [quantity, setQuantity] = useState<number>(0);
-    const [image, setImage] = useState("");
+    } 
+    const { products, addProduct } = useShoppingCart();
+    const [sizes, setSizes] = useState<Size[]>([])
+    const [loading, setLoading] = useState(false)
+    const [selectedSize, setSelectedSize] = useState("")
+    const [selectedSizeEnun, setSelectedSizeEnun] = useState("")
+    const [selectedOption, setSelectedOption] = useState("")
+    const [selectedOptionEnun, setSelectedOptionEnun] = useState("")
+    const [product, setProduct] = useState<Product>(fakeProduct)
+    const {getProduct} = useGetProduct()
+    const {getSizesByProduct} = useGetSizesByProduct()
+    const {getOptionsBySize} = useGetOptionsBySize()
+    const [options, setOptions] = useState<Option[]>([])
+    const [maxQuantity, setMaxQuantity] = useState<number>(0)
+    const [quantity, setQuantity] = useState<number>(0)
+    const [image,setImage] = useState("")
+    const [reviews, setReviews] = useState<Review[]>([])
+    const router = useRouter()
+    const {getReview} = useGetReview()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,8 +62,10 @@ export default function AddShoppingCart({ params }: Props) {
                 const response2 = await getSizesByProduct(params.id);
                 setSizes(response2);
                 const response = await getProduct(params.id);
-                setProduct(response);
-                setImage(response.mainImageUrl);
+                setProduct(response)
+                setImage(response.mainImageUrl)
+                const response3 = await getReview(params.id)
+                setReviews(response3)
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -220,6 +227,37 @@ export default function AddShoppingCart({ params }: Props) {
                     </div>
                 </div>
             </div>
+            {/*Botón de Añadir al Carrito*/}
+            <div>
+                <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700" onClick={()=>handleSubmit()}>Añadir al carrito</button>
+            </div>
+
+            {/*Descripción del Producto*/} 
+            <div>
+                <p className="font-semibold text-gray-700">Descripción</p>
+                <p className="text-gray-600 mt-2">
+                    {product?.description}
+                </p>
+                
+            </div>
+
+            {/* Sección de Comentarios */}
+            <div className="mt-8">
+                <p className="font-semibold text-gray-700">Comentarios</p>
+                <div className="space-y-4 mt-4">
+                {reviews.map((comment, index) => (
+                    <div key={index} className="p-4 border rounded-lg shadow-sm">
+                    <div className="flex items-center space-x-2 mb-2">
+                        <p className="font-semibold text-gray-800">{`Rating: ${comment.rating} / 5`}</p>
+                    </div>
+                    <p className="text-gray-600">{comment.comment}</p>
+                    </div>
+                ))}
+                </div>
+            </div>
+            </div>
+
+
         </div>
     );
 }

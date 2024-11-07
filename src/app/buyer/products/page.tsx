@@ -59,9 +59,6 @@ export default function HomeBuyerPage(){
         fetchData();
     }, [productFilter]);
     
-
-
-
     const handleSubmit = async (id:string) =>{
         router.push(`/buyer/products/details/${id}`)
     }
