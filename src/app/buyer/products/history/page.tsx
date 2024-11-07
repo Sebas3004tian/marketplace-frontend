@@ -77,7 +77,7 @@ export default function PurchaseProduct(){
                             <p className="text-sm mt-1">Color: {item.optionDescription}</p>
                             <p className="text-sm mt-1">Talla: {item.sizeName}</p>
                             <p className="text-sm mt-1">Cantidad: {item.amount}</p>
-                            <p className="text-sm mt-1">Fecha de compra: {item.createdDate}</p>
+                            <p className="text-sm mt-1">Fecha de compra: {item.createdDate.toLocaleDateString()}</p>
                             <button className="w-full mt-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" onClick={()=> handleSubmit(item.productId)}>
                         Dar un comentario
                     </button>
