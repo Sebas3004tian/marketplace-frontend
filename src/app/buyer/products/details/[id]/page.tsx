@@ -76,7 +76,7 @@ export default function AddShoppingCart({ params }: Props) {
     }, [params.id]);
 
     useEffect(() => {
-        if (!selectedSize) return;
+        if (selectedSize === "") return;
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -97,12 +97,11 @@ export default function AddShoppingCart({ params }: Props) {
     };
 
     const handleOption = (id: string) => {
-        if(id === "") return;
-        setSelectedOption(id);
         const selected = options.find((item) => item.id === id);
         if (selected) {
             setMaxQuantity(Number(selected.availableUnits));
             setSelectedOptionEnun(selected.description);
+            setSelectedOption(id);
             setImage(selected.imageUrl);
         }
     };
@@ -234,10 +233,6 @@ export default function AddShoppingCart({ params }: Props) {
                         <p className="text-gray-600 mt-2">{product?.description}</p>
                     </div>
                 </div>
-            </div>
-            {/*Botón de Añadir al Carrito*/}
-            <div>
-                <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700" onClick={()=>handleSubmit()}>Añadir al carrito</button>
             </div>
 
             {/*Descripción del Producto*/} 
